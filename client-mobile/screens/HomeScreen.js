@@ -1,4 +1,3 @@
-import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import {
@@ -15,24 +14,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import TopTabNavigator from "../navigators/TopTabNavigator";
 
 export default function HomeScreen({ navigation }) {
-  const [products, setProducts] = useState({});
-
-  useEffect(() => {
-    axios
-      .get("https://h8-p3-c1-belva.foxhub.space/pub/products")
-      .then((res) => {
-        setProducts(res.data);
-      });
-  }, []);
-
+  // console.log('navigation>>>', navigation);
   return (
     <View style={styles.container}>
-      <TopTabNavigator style={{
-        flex: 1
-      }}/>
-      <Text style={{
-        flex: 3
-      }}>Home Screen</Text>
+      <TopTabNavigator />
     </View>
   );
 }
@@ -40,7 +25,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
     // alignItems: "center",
     // justifyContent: "center",
   }

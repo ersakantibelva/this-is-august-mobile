@@ -1,12 +1,12 @@
 import { View, Text, Button } from "react-native"
 
 export default function DetailScreen({ route, navigation }) {
-  // const { itemId, itemName } = route.params
+  const { id } = route.params
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Details Screen</Text>
-      {/* <Text>{ itemId }</Text>
-      <Text>{ itemName }</Text> */}
+      <Text>{ id }</Text>
+      {/* <Text>{ itemName }</Text> */}
       <Button
         onPress={() => navigation.push('Detail')}
         title="Go to Detail..again"

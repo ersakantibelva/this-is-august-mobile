@@ -1,18 +1,21 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import BottomTabNavigator from "./BottomTabNavigator";
+import ProductDetailScreen from "../screens/ProductDetailScreen";
 import DetailScreen from "../screens/DetailScreen";
-import HomeScreen from "../screens/HomeScreen";
-import TabNavigator from "./TabNavigator";
-import TopTabNavigator from "./TopTabNavigator";
+import ProductCard from "../components/ProductCard";
 
 export default function StackNavigator() {
   const Stack = createNativeStackNavigator()
   return (
     <Stack.Navigator>
-    {/* <Stack.Screen name="Home" component={HomeScreen} options={{
-      headerShown: false
-    }}/> */}
-    <Stack.Screen name="Tab" component={TabNavigator} />
-    {/* <Stack.Screen name="TopTab" component={TopTabNavigator} /> */}
+    <Stack.Screen name="BottomTab" component={BottomTabNavigator} options={{
+      headerShadowVisible: false,
+      title: 'THIS IS AUGUST',
+      headerTitleAlign: "center"
+    }}/>
+    <Stack.Screen name="Product Detail" component={ProductDetailScreen} />
+    <Stack.Screen name="Detail" component={DetailScreen} />
+    <Stack.Screen name="ProductCard" component={ProductCard}/>
   </Stack.Navigator>
   )
 }
