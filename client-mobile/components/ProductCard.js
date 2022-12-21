@@ -1,9 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
 import { Text, View, Image, TouchableOpacity } from "react-native";
+import currencyFormat from "../helpers/currencyFormat";
 
 export default function ProductCard({ item }) {
   const navigate = useNavigation()
-  const price = Number(item.price).toLocaleString('id-ID')
   
   const onPress = () => {
     navigate.navigate('Product Detail', {
@@ -29,7 +30,7 @@ export default function ProductCard({ item }) {
         <Text style={{
           fontWeight: 'bold',
           fontSize: 20
-        }}>Rp{price},00</Text>
+        }}>{currencyFormat(item.price)}</Text>
       </TouchableOpacity>
     </View>
   )
