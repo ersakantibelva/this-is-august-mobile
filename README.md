@@ -1,6 +1,6 @@
 # P3-Challenge-2
 
-UI Library: ...
+UI Library: 
 
 Struktur Folder:
 
@@ -22,8 +22,8 @@ Target:
 - [x] Mencoba useState, useEffect dalam react-native
 - [x] Hit API server yang sudah dibuat untuk mendapatkan data
 - [x] Mengetahui bahwa redux & redux-thunk bisa diimplementasi di react-native
-- [ ] Memahami `react-native-navigation`
-- [ ] Memahami Stack Navigation & Tab Navigation
+- [x] Memahami `react-native-navigation`
+- [x] Memahami Stack Navigation & Tab Navigation
 - [ ] Membuat min 2 Screen (Home, Detail)
 
 **Report:**
@@ -34,8 +34,8 @@ Target:
 
 Target:
 
-- [ ] Memahami React Native Gesture Handler
-- [ ] Memahami NoSQL: Mongodb
+- [x] Memahami React Native Gesture Handler
+- [x] Memahami NoSQL: Mongodb
 - [ ] Membuat service users dengan Mongodb (Kerjakan di `server/services/users`)
 - [ ] Membuat action pada users: Read, Create & Delete (Update optional)
 
