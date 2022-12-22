@@ -1,5 +1,4 @@
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import currencyFormat from "../helpers/currencyFormat";
 
