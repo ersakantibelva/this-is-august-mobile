@@ -1,31 +1,38 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, View, Image, TouchableOpacity } from "react-native";
-import currencyFormat from "../helpers/currencyFormat";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
+import currencyFormat from "../helpers/currencyFormat";
+import Loader from "../components/Loader";
 
 export default function ProductDetailScreen({ route }) {
   const { slug } = route.params;
+  const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState({});
   const [bigImage, setBigImage] = useState("");
-  const [price, setPrice] = useState("");
 
   const showImage = (url) => {
     setBigImage(url);
   };
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get("https://h8-p3-c1-belva.foxhub.space/pub/products/" + slug)
       .then((res) => {
         setProduct(res.data);
         setBigImage(res.data.mainImg);
         currencyFormat(res.data.price);
-        // setPrice(price)
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
-  if (product.name) {
+  if (loading) {
+    return <Loader />;
+  } else if (!loading && product.name) {
     return (
       <ScrollView
         style={{
@@ -47,20 +54,6 @@ export default function ProductDetailScreen({ route }) {
           >
             <Text
               style={{
-                flexGrow: 1,
-                backgroundColor: "brown",
-                color: "white",
-                padding: 10,
-                borderRadius: 20,
-                alignItems: "center",
-                textAlign: 'center',
-                marginRight: 5,
-              }}
-            >
-              {product.Category.name}
-            </Text>
-            <Text
-              style={{
                 flex: 9,
                 fontSize: 18,
                 fontWeight: "bold",
@@ -68,6 +61,22 @@ export default function ProductDetailScreen({ route }) {
               }}
             >
               {product.name}
+            </Text>
+
+            <Text
+              style={{
+                // flexGrow: 1,
+                backgroundColor: "brown",
+                color: "white",
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                borderRadius: 20,
+                alignItems: "center",
+                textAlign: "center",
+                marginLeft: 5,
+              }}
+            >
+              {product.Category.name}
             </Text>
           </View>
           <Text>{product.description}</Text>
@@ -138,7 +147,7 @@ export default function ProductDetailScreen({ route }) {
             height: 80,
           }}
         >
-          <View
+          <TouchableOpacity
             style={{
               flex: 5,
               backgroundColor: "brown",
@@ -157,8 +166,9 @@ export default function ProductDetailScreen({ route }) {
             >
               ADD TO CART
             </Text>
-          </View>
-          <View
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={{
               flex: 1,
               width: "100%",
@@ -168,7 +178,7 @@ export default function ProductDetailScreen({ route }) {
             }}
           >
             <MaterialIcons name="favorite-outline" size={50} color="crimson" />
-          </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     );
