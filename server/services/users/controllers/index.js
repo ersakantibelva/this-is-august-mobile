@@ -1,3 +1,4 @@
+const { hashPass } = require('../helpers/bcrypt');
 const User = require('../models/User');
 
 class Controller {
@@ -18,6 +19,37 @@ class Controller {
       if(!user) throw { message: 'Data is not found' }
 
       res.status(200).json(user)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async createUser(req, res, next) {
+    try {
+      let { username, email, password, role, phoneNumber, address } = req.body
+      if(!email) throw { message: 'Email is required' }
+      if(!password) throw { message: 'Password is required' }
+
+      password = hashPass(password)
+
+      const data = { email, password }
+
+      username && (data.username = username)
+      role ? data.role = role : data.role = "Admin"
+      phoneNumber && (data.phoneNumber = phoneNumber)
+      address && (data.address = address)
+
+      const result = await User.create(data)
+      res.status(201).json(`User has been added by id ${result.insertedId}`)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async deleteUser(req, res, next) {
+    try {
+
+      res.status(200).json("ok")
     } catch (error) {
       next(error)
     }

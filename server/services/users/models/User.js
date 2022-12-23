@@ -30,6 +30,25 @@ class User {
       throw error
     }
   }
+
+  static async create(data) {
+    try {
+      const collection = this.getCollection()
+      const result = await collection.insertOne(data)
+      console.log('habis bikin');
+      return result
+    } catch (error) {
+      throw error
+    }
+  }
+
+  static async destroy(id) {
+    try {
+      
+    } catch (error) {
+      throw error
+    }
+  }
 }
 
 module.exports = User
