@@ -36,8 +36,8 @@ Target:
 
 - [x] Memahami React Native Gesture Handler
 - [x] Memahami NoSQL: Mongodb
-- [ ] Membuat service users dengan Mongodb (Kerjakan di `server/services/users`)
-- [ ] Membuat action pada users: Read, Create & Delete (Update optional)
+- [x] Membuat service users dengan Mongodb (Kerjakan di `server/services/users`)
+- [x] Membuat action pada users: Read, Create & Delete (Update optional)
 
 **Report:**
 

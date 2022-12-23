@@ -10,8 +10,6 @@ const errorHandler = (err, req, res, next) => {
     "Invalid email format"
   ];
 
-  console.log(err);
-
   if (err.message == "Data is not found") {
     code = 404;
     message = err.message;
@@ -19,7 +17,6 @@ const errorHandler = (err, req, res, next) => {
     code = 404;
     message = "Data is not found";
   } else if (badReqVal.includes(err.message)) {
-    console.log("masuk");
     code = 400;
     message = err.message;
   }
