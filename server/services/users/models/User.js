@@ -31,6 +31,19 @@ class User {
     }
   }
 
+  static async findByEmail(email) {
+    try {
+      const collection = this.getCollection()
+      const user = await collection.findOne({
+        email
+      })
+
+      return user
+    } catch (error) {
+      throw error
+    }
+  }
+
   static async create(data) {
     try {
       const collection = this.getCollection()

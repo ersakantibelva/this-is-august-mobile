@@ -27,8 +27,14 @@ class Controller {
   static async createUser(req, res, next) {
     try {
       let { username, email, password, role, phoneNumber, address } = req.body
+
       if(!email) throw { message: 'Email is required' }
+      const user = await User.findByEmail(email)
+      if(!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) throw { message: "Invalid email format" }
+      if(user) throw { message: 'Email must be unique' }
+
       if(!password) throw { message: 'Password is required' }
+      if(password.length < 5) throw { message: 'Password must have minimum of 5 characters' }
 
       password = hashPass(password)
 
@@ -51,7 +57,7 @@ class Controller {
       const { id } = req.params
       const result = await User.destroy(id)
       if(!result.deletedCount) throw { message: 'Data is not found' }
-      
+
       res.status(200).json("User has been deleted")
     } catch (error) {
       next(error)
