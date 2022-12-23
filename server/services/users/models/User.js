@@ -35,7 +35,7 @@ class User {
     try {
       const collection = this.getCollection()
       const result = await collection.insertOne(data)
-      console.log('habis bikin');
+
       return result
     } catch (error) {
       throw error
@@ -44,7 +44,12 @@ class User {
 
   static async destroy(id) {
     try {
-      
+      const collection = this.getCollection()
+      const result = await collection.deleteOne({
+        _id: ObjectId(id)
+      })
+
+      return result
     } catch (error) {
       throw error
     }

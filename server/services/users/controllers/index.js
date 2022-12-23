@@ -48,8 +48,11 @@ class Controller {
 
   static async deleteUser(req, res, next) {
     try {
-
-      res.status(200).json("ok")
+      const { id } = req.params
+      const result = await User.destroy(id)
+      if(!result.deletedCount) throw { message: 'Data is not found' }
+      
+      res.status(200).json("User has been deleted")
     } catch (error) {
       next(error)
     }
