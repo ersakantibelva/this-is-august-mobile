@@ -6,6 +6,11 @@ class Controller {
     try {
       const users = await User.findAll()
 
+      users.map(el => {
+        delete el.password
+        return el
+      })
+
       res.status(200).json(users)
     } catch (error) {
       next(error)
@@ -17,6 +22,8 @@ class Controller {
       const { id } = req.params
       const user = await User.findById(id)
       if(!user) throw { message: 'Data is not found' }
+
+      delete user.password
 
       res.status(200).json(user)
     } catch (error) {

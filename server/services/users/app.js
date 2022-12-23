@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const express = require('express')
 const cors = require('cors');
+const morgan = require('morgan')
 const { mongoConnect } = require('./config/mongoConnect');
 const router = require('./router');
 const errorHandler = require('./middlewares/errorHandler');
@@ -13,6 +14,7 @@ const port = 4001
 app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(morgan('tiny'))
 
 app.use(router)
 
