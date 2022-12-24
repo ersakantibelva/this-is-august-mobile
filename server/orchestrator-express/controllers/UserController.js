@@ -1,12 +1,24 @@
 const axios = require("axios")
+const redis = require('../config/cache')
 const baseUrl = 'http://localhost:4001/users'
 
 class UserController {
   static async getUsers(req, res, next) {
     try {
-      const { data: users } = await axios.get(`${baseUrl}`)
+      const cacheUser = await redis.get("cacheUser")
+      console.log('cacheUser',cacheUser);
 
-      res.status(200).json(users)
+      if(!cacheUser) {
+        console.log('dari service');
+        const { data: users } = await axios.get(`${baseUrl}`)
+        
+        await redis.set("cacheUser", JSON.stringify(users))
+        
+        res.status(200).json(users)
+      } else {
+        console.log('dari cache');
+        res.status(200).json(JSON.parse(cacheUser))
+      }
     } catch (error) {
       next(error)
     }
@@ -29,6 +41,8 @@ class UserController {
       const { data } = await axios.post(`${baseUrl}`, {
         username, email, password, role, phoneNumber, address
       })
+
+      await redis.del("cacheUser")
   
       res.status(201).json(data)
     } catch (error) {
@@ -40,6 +54,8 @@ class UserController {
     try {
       const { id } = req.params
       const { data } = await axios.delete(`${baseUrl}/${id}`)
+
+      await redis.del("cacheUser")
   
       res.status(200).json(data)
     } catch (error) {
