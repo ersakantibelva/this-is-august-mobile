@@ -44,11 +44,42 @@ const typeDefs = `#graphql
     User: User
   }
 
+  type Output {
+    message: String
+  }
+
   type Query {
     users: [User]
     user (userId: ID) : User,
     products: [Product]
     product (productId: ID) : Product
+  }
+
+  input userInput {
+    username: String
+    email: String
+    password: String
+    role: String
+    address: String
+  }
+
+  input imageInput {
+    imgUrl: String
+  }
+
+  input productInput {
+    name: String
+    description: String
+    price: Int
+    mainImg: String
+    categoryId: Int
+    UserMongoDb: String
+    images: [imageInput]
+  }
+
+  type Mutation {
+    addUser(content: userInput): Output
+    addProduct(content: productInput): Output
   }
 `
 
@@ -90,12 +121,50 @@ const resolvers = {
         const { productId } = args
         const { data: product } = await axios.get(`http://localhost:4002/products/${productId}`)
 
+        const { data: User } = await axios.get(`http://localhost:4001/users/${product.UserMongoDb}`)
+
+        product.User = User
+
         return product
       } catch (error) {
         console.log(error);
       }
     }
   },
+
+  Mutation: {
+    addUser: async (_, args) => {
+      try {
+        const { username, email, password, role, phoneNumber, address } = args.content
+
+        const { data } = await axios.post('http://localhost:4001/users', {
+          username, email, password, role, phoneNumber, address
+        })
+
+        const output = { message: data }
+
+        return output
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    addProduct: async (_, args) => {
+      try {
+        const { name, description, price, mainImg, categoryId, UserMongoDb, images } = args.content
+
+        const { data: User } =  await axios.get(`http://localhost:4001/users/${UserMongoDb}`)
+
+        const { data } = await axios.post('http://localhost:4002/products', {
+          name, description, price, mainImg, categoryId, UserMongoDb, images
+        })
+
+        return data
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
 };
 
 const server = new ApolloServer({
