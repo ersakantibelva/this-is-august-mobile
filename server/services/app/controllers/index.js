@@ -184,7 +184,7 @@ class Controller {
     const t = await sequelize.transaction()
 
     try {
-      const { name, description, price, mainImg, categoryId, images } = req.body
+      const { name, description, price, mainImg, categoryId, UserMongoDb, images } = req.body
       if(!name) throw { message: "Name is required" }
       if(!description) throw { message: "Description is required" }
       if(!price) throw { message: "Price is required" }
@@ -200,6 +200,7 @@ class Controller {
         price,
         mainImg,
         categoryId,
+        UserMongoDb
       }, {
         transaction: t
       })
@@ -229,6 +230,7 @@ class Controller {
       const product = await Product.findByPk(productId, {
         include: [ Category, Image ]
       })
+      if(!product) throw { message: 'Data is not found' }
       
       res.status(200).json(product)
     } catch (error) {
@@ -304,7 +306,7 @@ class Controller {
       }
 
       t.commit()
-      res.status(200).json({ message: `Product ${product.name} has been updated` })
+      res.status(200).json({ message: `Product has been updated` })
     } catch (error) {
       t.rollback()
       next(error)
