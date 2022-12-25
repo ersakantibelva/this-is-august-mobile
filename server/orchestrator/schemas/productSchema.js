@@ -50,7 +50,7 @@ const typeDefs = `#graphql
   }
 
   type Query {
-    products: [Product]
+    products (search: String) : [Product]
     product (productId: ID) : Product
   }
 
@@ -91,16 +91,18 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Query: {
-    products: async () => {
+    products: async (_, args) => {
       try {
+        const { search } = args
         const productCache = await redis.get('productCache')
-        
-        if(productCache) {
+        if(productCache && !search) {
           return JSON.parse(productCache)
-        } else {
-          const { data: products } = await axios.get(
-            `${productUrl}`
-          );
+        } else if (!productCache || search) {
+          let url = productUrl
+          
+          if(search) url += `?search=${search}`
+
+          const { data: products } = await axios.get(url);
   
           const { data: users } = await axios.get(
             `${userUrl}`
@@ -113,7 +115,7 @@ const resolvers = {
             return el
           })
 
-          await redis.set('productCache', JSON.stringify(products))
+          if(!search) await redis.set('productCache', JSON.stringify(products))
           
           return products;
         }
