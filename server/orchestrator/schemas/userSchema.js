@@ -1,5 +1,6 @@
 const axios = require("axios");
 const userUrl = 'http://localhost:4001/users'
+const redis = require('../config/cache')
 
 const typeDefs = `#graphql
   type User {
@@ -38,10 +39,17 @@ const resolvers = {
   Query: {
     users: async () => {
       try {
+        const cacheUser = await redis.get('cacheUser')
 
-        const { data: users } = await axios.get(userUrl);
+        if(cacheUser) {
+          return JSON.parse(cacheUser)
+        } else {
+          const { data: users } = await axios.get(userUrl);
+          
+          await redis.set('cacheUser', JSON.stringify(users))
 
-        return users;
+          return users;
+        }
       } catch (error) {
         console.log(error);
       }
@@ -78,6 +86,7 @@ const resolvers = {
           address,
         });
 
+        await redis.del('cacheUser')
         const output = { message: data };
 
         return output;
@@ -94,7 +103,9 @@ const resolvers = {
           `${userUrl}/${userId}`
         );
 
+        await redis.del('cacheUser')
         const output = { message: data };
+
         return output;
       } catch (error) {
         console.log(error);

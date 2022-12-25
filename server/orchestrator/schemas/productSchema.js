@@ -1,4 +1,5 @@
 const axios = require("axios");
+const redis = require('../config/cache')
 const productUrl = 'http:localhost:4002/products'
 const userUrl = 'http://localhost:4001/users'
 
@@ -92,22 +93,30 @@ const resolvers = {
   Query: {
     products: async () => {
       try {
-        const { data: products } = await axios.get(
-          `${productUrl}`
-        );
-
-        const { data: users } = await axios.get(
-          `${userUrl}`
-        );
+        const productCache = await redis.get('productCache')
         
-        products.map(el => {
-          users.forEach(ele => {
-            if(ele["_id"] == el.UserMongoDb) el.User = ele
+        if(productCache) {
+          return JSON.parse(productCache)
+        } else {
+          const { data: products } = await axios.get(
+            `${productUrl}`
+          );
+  
+          const { data: users } = await axios.get(
+            `${userUrl}`
+          );
+          
+          products.map(el => {
+            users.forEach(ele => {
+              if(ele["_id"] == el.UserMongoDb) el.User = ele
+            })
+            return el
           })
-          return el
-        })
 
-        return products;
+          await redis.set('productCache', JSON.stringify(products))
+          
+          return products;
+        }
       } catch (error) {
         console.log(error);
       }
@@ -156,6 +165,8 @@ const resolvers = {
           images,
         });
 
+        await redis.del('productCache')
+
         return data;
       } catch (error) {
         console.log(error);
@@ -177,6 +188,8 @@ const resolvers = {
           Images
         });
 
+        await redis.del('productCache')
+
         return data
       } catch (error) {
         console.log(error);
@@ -190,6 +203,8 @@ const resolvers = {
         const { data } = await axios.delete(
           `${productUrl}/${productId}`
         );
+
+        await redis.del('productCache')
 
         return data;
       } catch (error) {
