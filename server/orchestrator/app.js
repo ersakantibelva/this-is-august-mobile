@@ -78,8 +78,10 @@ const typeDefs = `#graphql
   }
 
   type Mutation {
-    addUser(content: userInput): Output
-    addProduct(content: productInput): Output
+    addUser (content: userInput): Output
+    deleteUser (userId: ID): Output
+    addProduct (content: productInput): Output
+    deleteProduct (productId: ID): Output
   }
 `
 
@@ -149,6 +151,19 @@ const resolvers = {
       }
     },
 
+    deleteUser: async (_, args) => {
+      try {
+        const { userId } = args
+
+        const { data } = await axios.delete(`http://localhost:4001/users/${userId}`)
+
+        const output = { message: data }
+        return output
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     addProduct: async (_, args) => {
       try {
         const { name, description, price, mainImg, categoryId, UserMongoDb, images } = args.content
@@ -158,6 +173,19 @@ const resolvers = {
         const { data } = await axios.post('http://localhost:4002/products', {
           name, description, price, mainImg, categoryId, UserMongoDb, images
         })
+
+        return data
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    deleteProduct: async (_, args) => {
+      try {
+        const { productId } = args
+
+        const { data } = await axios.delete(`http://localhost:4002/products/${productId}`)
+        
 
         return data
       } catch (error) {
