@@ -24,7 +24,7 @@ Target:
 - [x] Mengetahui bahwa redux & redux-thunk bisa diimplementasi di react-native
 - [x] Memahami `react-native-navigation`
 - [x] Memahami Stack Navigation & Tab Navigation
-- [ ] Membuat min 2 Screen (Home, Detail)
+- [x] Membuat min 2 Screen (Home, Detail)
 
 **Report:**
 
@@ -47,11 +47,11 @@ Target:
 
 Target:
 
-- [ ] Membuat Server Baru, Microservices
-- [ ] Memisahkan service user dan app
+- [x] Membuat Server Baru, Microservices
+- [x] Memisahkan service user dan app
 - [ ] Membuat Orchestrator-express yang bisa komunikasi ke service user dan app
-- [ ] Memahami cache dalam database
-- [ ] Install dataabase Redis dan menggunakan ioRedis sebagai cache
+- [x] Memahami cache dalam database
+- [x] Install dataabase Redis dan menggunakan ioRedis sebagai cache
 - [ ] Menjaga relasi User dengan product pada microservice
 
 **Report:**

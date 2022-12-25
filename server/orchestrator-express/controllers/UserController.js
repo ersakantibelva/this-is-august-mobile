@@ -6,17 +6,14 @@ class UserController {
   static async getUsers(req, res, next) {
     try {
       const cacheUser = await redis.get("cacheUser")
-      console.log('cacheUser',cacheUser);
 
       if(!cacheUser) {
-        console.log('dari service');
         const { data: users } = await axios.get(`${baseUrl}`)
         
         await redis.set("cacheUser", JSON.stringify(users))
         
         res.status(200).json(users)
       } else {
-        console.log('dari cache');
         res.status(200).json(JSON.parse(cacheUser))
       }
     } catch (error) {
