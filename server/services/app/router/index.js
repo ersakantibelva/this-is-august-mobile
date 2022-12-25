@@ -1,15 +1,15 @@
 const Controller = require('../controllers')
-const authentication = require('../middlewares/authentication')
+// const authentication = require('../middlewares/authentication')
 const router = require('express').Router()
 
-router.post('/login', Controller.login)
+// router.post('/login', Controller.login)
 router.get('/pub/products', Controller.showProductsPub)
 router.get('/pub/products/:slug', Controller.showProductBySlug)
 router.get('/pub/categories/:categoryName/products', Controller.showProductByCategoryPub)
 
-router.use(authentication)
+// router.use(authentication)
 
-router.post('/register', Controller.register)
+// router.post('/register', Controller.register)
 
 router.get('/products', Controller.showProducts)
 router.post('/products', Controller.addProduct)

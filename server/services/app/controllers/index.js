@@ -159,12 +159,11 @@ class Controller {
   static async showProducts(req, res, next) {
     try {
       const { search } = req.query
-
       const options = {
         order: [["id", "ASC"]],
-        include: [ User, Category, Image ]
+        include: [ Category, Image ]
       }
-
+      
       if(search) {
         options.where = {
           name: {
@@ -172,9 +171,9 @@ class Controller {
           }
         }
       }
-
+      
       const products = await Product.findAll(options)
-
+      
       res.status(200).json(products)
     } catch (error) {
       next(error)
@@ -201,7 +200,6 @@ class Controller {
         price,
         mainImg,
         categoryId,
-        authorId: req.user.id
       }, {
         transaction: t
       })
@@ -229,7 +227,7 @@ class Controller {
       const { productId } = req.params
 
       const product = await Product.findByPk(productId, {
-        include: [ User, Category, Image ]
+        include: [ Category, Image ]
       })
       
       res.status(200).json(product)
