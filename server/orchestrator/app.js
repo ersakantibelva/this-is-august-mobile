@@ -1,6 +1,6 @@
-const { ApolloServer } = require('@apollo/server')
-const { startStandaloneServer } = require('@apollo/server/standalone');
-const axios = require('axios')
+const { ApolloServer } = require("@apollo/server");
+const { startStandaloneServer } = require("@apollo/server/standalone");
+const axios = require("axios");
 
 const typeDefs = `#graphql
   type User {
@@ -77,21 +77,36 @@ const typeDefs = `#graphql
     images: [imageInput]
   }
 
+  input imageEdit {
+    id: ID,
+    imgUrl: String
+  }
+
+  input productEdit {
+    name: String
+    description: String
+    price: Int
+    mainImg: String
+    categoryId: Int
+    Images: [imageEdit]
+  }
+
   type Mutation {
     addUser (content: userInput): Output
     deleteUser (userId: ID): Output
     addProduct (content: productInput): Output
+    editProduct (productId: ID, content: productEdit): Output
     deleteProduct (productId: ID): Output
   }
-`
+`;
 
 const resolvers = {
   Query: {
     users: async () => {
       try {
-        const { data: users } = await axios.get('http://localhost:4001/users')
+        const { data: users } = await axios.get("http://localhost:4001/users");
 
-        return users 
+        return users;
       } catch (error) {
         console.log(error);
       }
@@ -99,11 +114,13 @@ const resolvers = {
 
     user: async (_, args) => {
       try {
-        const { userId } = args
+        const { userId } = args;
 
-        const { data: user } = await axios.get(`http://localhost:4001/users/${userId}`)
+        const { data: user } = await axios.get(
+          `http://localhost:4001/users/${userId}`
+        );
 
-        return user
+        return user;
       } catch (error) {
         console.log(error);
       }
@@ -111,8 +128,10 @@ const resolvers = {
 
     products: async () => {
       try {
-        const { data: products } =  await axios.get('http:localhost:4002/products')
-        return products
+        const { data: products } = await axios.get(
+          "http:localhost:4002/products"
+        );
+        return products;
       } catch (error) {
         console.log(error);
       }
@@ -120,32 +139,42 @@ const resolvers = {
 
     product: async (_, args) => {
       try {
-        const { productId } = args
-        const { data: product } = await axios.get(`http://localhost:4002/products/${productId}`)
+        const { productId } = args;
+        const { data: product } = await axios.get(
+          `http://localhost:4002/products/${productId}`
+        );
 
-        const { data: User } = await axios.get(`http://localhost:4001/users/${product.UserMongoDb}`)
+        const { data: User } = await axios.get(
+          `http://localhost:4001/users/${product.UserMongoDb}`
+        );
 
-        product.User = User
+        product.User = User;
 
-        return product
+        return product;
       } catch (error) {
         console.log(error);
       }
-    }
+    },
   },
 
   Mutation: {
     addUser: async (_, args) => {
       try {
-        const { username, email, password, role, phoneNumber, address } = args.content
+        const { username, email, password, role, phoneNumber, address } =
+          args.content;
 
-        const { data } = await axios.post('http://localhost:4001/users', {
-          username, email, password, role, phoneNumber, address
-        })
+        const { data } = await axios.post("http://localhost:4001/users", {
+          username,
+          email,
+          password,
+          role,
+          phoneNumber,
+          address,
+        });
 
-        const output = { message: data }
+        const output = { message: data };
 
-        return output
+        return output;
       } catch (error) {
         console.log(error);
       }
@@ -153,12 +182,14 @@ const resolvers = {
 
     deleteUser: async (_, args) => {
       try {
-        const { userId } = args
+        const { userId } = args;
 
-        const { data } = await axios.delete(`http://localhost:4001/users/${userId}`)
+        const { data } = await axios.delete(
+          `http://localhost:4001/users/${userId}`
+        );
 
-        const output = { message: data }
-        return output
+        const output = { message: data };
+        return output;
       } catch (error) {
         console.log(error);
       }
@@ -166,13 +197,50 @@ const resolvers = {
 
     addProduct: async (_, args) => {
       try {
-        const { name, description, price, mainImg, categoryId, UserMongoDb, images } = args.content
+        const {
+          name,
+          description,
+          price,
+          mainImg,
+          categoryId,
+          UserMongoDb,
+          images,
+        } = args.content;
 
-        const { data: User } =  await axios.get(`http://localhost:4001/users/${UserMongoDb}`)
+        const { data: User } = await axios.get(
+          `http://localhost:4001/users/${UserMongoDb}`
+        );
 
-        const { data } = await axios.post('http://localhost:4002/products', {
-          name, description, price, mainImg, categoryId, UserMongoDb, images
-        })
+        const { data } = await axios.post("http://localhost:4002/products", {
+          name,
+          description,
+          price,
+          mainImg,
+          categoryId,
+          UserMongoDb,
+          images,
+        });
+
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    editProduct: async (_, args) => {
+      try {
+        const { productId } = args;
+        const { name, description, price, mainImg, categoryId, Images } =
+          args.content;
+
+        const { data } = await axios.put(`http://localhost:4002/products/${productId}`, {
+          name,
+          description,
+          price,
+          mainImg,
+          categoryId,
+          Images
+        });
 
         return data
       } catch (error) {
@@ -182,17 +250,18 @@ const resolvers = {
 
     deleteProduct: async (_, args) => {
       try {
-        const { productId } = args
+        const { productId } = args;
 
-        const { data } = await axios.delete(`http://localhost:4002/products/${productId}`)
-        
+        const { data } = await axios.delete(
+          `http://localhost:4002/products/${productId}`
+        );
 
-        return data
+        return data;
       } catch (error) {
         console.log(error);
       }
-    }
-  }
+    },
+  },
 };
 
 const server = new ApolloServer({
@@ -202,7 +271,6 @@ const server = new ApolloServer({
 
 startStandaloneServer(server, {
   listen: { port: 4000 },
-})
-.then(({ url }) => {
+}).then(({ url }) => {
   console.log(`🚀  Server ready at: ${url}`);
-})
+});
