@@ -46,9 +46,9 @@ const typeDefs = `#graphql
 
   type Query {
     users: [User]
-    user: User,
+    user (userId: ID) : User,
     products: [Product]
-    product: Product
+    product (productId: ID) : Product
   }
 `
 
@@ -56,19 +56,21 @@ const resolvers = {
   Query: {
     users: async () => {
       try {
-        console.log('1');
         const { data: users } = await axios.get('http://localhost:4001/users')
-        console.log('2');
+
         return users 
       } catch (error) {
         console.log(error);
       }
     },
 
-    user: async () => {
+    user: async (_, args) => {
       try {
-        
-        return
+        const { userId } = args
+
+        const { data: user } = await axios.get(`http://localhost:4001/users/${userId}`)
+
+        return user
       } catch (error) {
         console.log(error);
       }
@@ -83,10 +85,12 @@ const resolvers = {
       }
     },
 
-    product: async () => {
+    product: async (_, args) => {
       try {
-        
-        return
+        const { productId } = args
+        const { data: product } = await axios.get(`http://localhost:4002/products/${productId}`)
+
+        return product
       } catch (error) {
         console.log(error);
       }
