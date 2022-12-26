@@ -51,7 +51,7 @@ const typeDefs = `#graphql
 
   type Query {
     products (search: String) : [Product]
-    product (productId: ID) : Product
+    product (productId: ID!) : Product
   }
 
   input imageInput {
@@ -59,12 +59,12 @@ const typeDefs = `#graphql
   }
 
   input productInput {
-    name: String
+    name: String!
     description: String
-    price: Int
-    mainImg: String
-    categoryId: Int
-    UserMongoDb: String
+    price: Int!
+    mainImg: String!
+    categoryId: Int!
+    UserMongoDb: String!
     images: [imageInput]
   }
 
@@ -74,18 +74,18 @@ const typeDefs = `#graphql
   }
 
   input productEdit {
-    name: String
+    name: String!
     description: String
-    price: Int
-    mainImg: String
-    categoryId: Int
+    price: Int!
+    mainImg: String!
+    categoryId: Int!
     Images: [imageEdit]
   }
 
   type Mutation {
     addProduct (content: productInput): Output
-    editProduct (productId: ID, content: productEdit): Output
-    deleteProduct (productId: ID): Output
+    editProduct (productId: ID!, content: productEdit): Output
+    deleteProduct (productId: ID!): Output
   }
 `;
 

@@ -18,20 +18,20 @@ const typeDefs = `#graphql
 
   type Query {
     users: [User]
-    user (userId: ID) : User,
+    user (userId: ID!) : User,
   }
 
   input userInput {
     username: String
-    email: String
-    password: String
+    email: String!
+    password: String!
     role: String
     address: String
   }
 
   type Mutation {
     addUser (content: userInput): Output
-    deleteUser (userId: ID): Output
+    deleteUser (userId: ID!): Output
   }
 `;
 
