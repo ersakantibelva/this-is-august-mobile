@@ -1,45 +1,38 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, View, Image, TouchableOpacity } from "react-native";
-import { useQuery } from "@apollo/client";
-import { GET_PRODUCT_DETAIL } from "../queries/product";
-import currencyFormat from "../helpers/currencyFormat";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import currencyFormat from "../helpers/currencyFormat";
 import Loader from "../components/Loader";
 
 export default function ProductDetailScreen({ route }) {
-  const { id } = route.params;
-  const { loading, error, data } = useQuery(GET_PRODUCT_DETAIL, {
-    variables: {
-      "productId": id
-    }
-  })
-  // console.log(data.product);
-  // const [product, setProduct] = useState({});
+  const { slug } = route.params;
+  const [loading, setLoading] = useState(false);
+  const [product, setProduct] = useState({});
   const [bigImage, setBigImage] = useState("");
 
   const showImage = (url) => {
     setBigImage(url);
   };
 
-  // useEffect(() => {
-  //   axios
-  //     .get("https://h8-p3-c1-belva.foxhub.space/pub/products/" + slug)
-  //     .then((res) => {
-  //       setProduct(res.data);
-  //       setBigImage(res.data.mainImg);
-  //       currencyFormat(res.data.price);
-  //       // setPrice(price)
-  //     });
-  // }, []);
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get("https://h8-p3-c1-belva.foxhub.space/pub/products/" + slug)
+      .then((res) => {
+        setProduct(res.data);
+        setBigImage(res.data.mainImg);
+        currencyFormat(res.data.price);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
-  if (!loading) {
-
-    useEffect(() => {
-      setBigImage(data.product.mainImg)
-    }, [])
-    
+  if (loading) {
+    return <Loader />;
+  } else if (!loading && product.name) {
     return (
       <ScrollView
         style={{
@@ -61,27 +54,13 @@ export default function ProductDetailScreen({ route }) {
           >
             <Text
               style={{
-                flexGrow: 1,
-                backgroundColor: "brown",
-                color: "white",
-                padding: 10,
-                borderRadius: 20,
-                alignItems: "center",
-                textAlign: 'center',
-                marginRight: 5,
-              }}
-            >
-              {data.product.Category.name}
-            </Text>
-            <Text
-              style={{
                 flex: 9,
                 fontSize: 18,
                 fontWeight: "bold",
                 marginBottom: 5,
               }}
             >
-              {data.product.name}
+              {product.name}
             </Text>
 
             <Text
@@ -100,7 +79,7 @@ export default function ProductDetailScreen({ route }) {
               {product.Category.name}
             </Text>
           </View>
-          <Text>{data.product.description}</Text>
+          <Text>{product.description}</Text>
         </View>
 
         {bigImage && (
@@ -116,10 +95,10 @@ export default function ProductDetailScreen({ route }) {
         )}
 
         <ScrollView horizontal={true}>
-          <TouchableOpacity onPress={() => showImage(data.product.mainImg)}>
+          <TouchableOpacity onPress={() => showImage(product.mainImg)}>
             <Image
               source={{
-                uri: data.product.mainImg,
+                uri: product.mainImg,
               }}
               style={{
                 width: 100,
@@ -128,8 +107,8 @@ export default function ProductDetailScreen({ route }) {
             />
           </TouchableOpacity>
 
-          {data.product.Images &&
-            data.product.Images.map((image) => {
+          {product.Images &&
+            product.Images.map((image) => {
               return (
                 <TouchableOpacity
                   key={image.id}
@@ -157,7 +136,7 @@ export default function ProductDetailScreen({ route }) {
             paddingHorizontal: 20,
           }}
         >
-          {currencyFormat(data.product.price)}
+          {currencyFormat(product.price)}
         </Text>
 
         <View

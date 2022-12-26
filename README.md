@@ -24,7 +24,7 @@ Target:
 - [x] Mengetahui bahwa redux & redux-thunk bisa diimplementasi di react-native
 - [x] Memahami `react-native-navigation`
 - [x] Memahami Stack Navigation & Tab Navigation
-- [x] Membuat min 2 Screen (Home, Detail)
+- [ ] Membuat min 2 Screen (Home, Detail)
 
 **Report:**
 
@@ -36,8 +36,8 @@ Target:
 
 - [x] Memahami React Native Gesture Handler
 - [x] Memahami NoSQL: Mongodb
-- [x] Membuat service users dengan Mongodb (Kerjakan di `server/services/users`)
-- [x] Membuat action pada users: Read, Create & Delete (Update optional)
+- [ ] Membuat service users dengan Mongodb (Kerjakan di `server/services/users`)
+- [ ] Membuat action pada users: Read, Create & Delete (Update optional)
 
 **Report:**
 
@@ -47,11 +47,11 @@ Target:
 
 Target:
 
-- [x] Membuat Server Baru, Microservices
-- [x] Memisahkan service user dan app
+- [ ] Membuat Server Baru, Microservices
+- [ ] Memisahkan service user dan app
 - [ ] Membuat Orchestrator-express yang bisa komunikasi ke service user dan app
-- [x] Memahami cache dalam database
-- [x] Install dataabase Redis dan menggunakan ioRedis sebagai cache
+- [ ] Memahami cache dalam database
+- [ ] Install dataabase Redis dan menggunakan ioRedis sebagai cache
 - [ ] Menjaga relasi User dengan product pada microservice
 
 **Report:**
