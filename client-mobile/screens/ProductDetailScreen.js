@@ -5,10 +5,11 @@ import { useQuery } from "@apollo/client";
 import { GET_PRODUCT_DETAIL } from "../queries/product";
 import currencyFormat from "../helpers/currencyFormat";
 import { MaterialIcons } from "@expo/vector-icons";
+import currencyFormat from "../helpers/currencyFormat";
+import Loader from "../components/Loader";
 
 export default function ProductDetailScreen({ route }) {
   const { id } = route.params;
-
   const { loading, error, data } = useQuery(GET_PRODUCT_DETAIL, {
     variables: {
       "productId": id
@@ -17,7 +18,6 @@ export default function ProductDetailScreen({ route }) {
   // console.log(data.product);
   // const [product, setProduct] = useState({});
   const [bigImage, setBigImage] = useState("");
-  const [price, setPrice] = useState("");
 
   const showImage = (url) => {
     setBigImage(url);
@@ -82,6 +82,22 @@ export default function ProductDetailScreen({ route }) {
               }}
             >
               {data.product.name}
+            </Text>
+
+            <Text
+              style={{
+                // flexGrow: 1,
+                backgroundColor: "brown",
+                color: "white",
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                borderRadius: 20,
+                alignItems: "center",
+                textAlign: "center",
+                marginLeft: 5,
+              }}
+            >
+              {product.Category.name}
             </Text>
           </View>
           <Text>{data.product.description}</Text>
@@ -152,7 +168,7 @@ export default function ProductDetailScreen({ route }) {
             height: 80,
           }}
         >
-          <View
+          <TouchableOpacity
             style={{
               flex: 5,
               backgroundColor: "brown",
@@ -171,8 +187,9 @@ export default function ProductDetailScreen({ route }) {
             >
               ADD TO CART
             </Text>
-          </View>
-          <View
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={{
               flex: 1,
               width: "100%",
@@ -182,7 +199,7 @@ export default function ProductDetailScreen({ route }) {
             }}
           >
             <MaterialIcons name="favorite-outline" size={50} color="crimson" />
-          </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     );

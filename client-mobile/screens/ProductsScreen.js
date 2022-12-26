@@ -1,3 +1,4 @@
+
 import { FlatList, View } from "react-native";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCTS } from "../queries/product";
