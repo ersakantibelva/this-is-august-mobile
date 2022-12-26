@@ -1,5 +1,4 @@
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import currencyFormat from "../helpers/currencyFormat";
 
@@ -8,7 +7,7 @@ export default function ProductCard({ item }) {
   
   const onPress = () => {
     navigate.navigate('Product Detail', {
-      slug: item.slug,
+      id: item.id,
       name: item.name
     })
   }
