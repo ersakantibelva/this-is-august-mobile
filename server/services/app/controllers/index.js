@@ -159,12 +159,11 @@ class Controller {
   static async showProducts(req, res, next) {
     try {
       const { search } = req.query
-
       const options = {
         order: [["id", "ASC"]],
-        include: [ User, Category, Image ]
+        include: [ Category, Image ]
       }
-
+      
       if(search) {
         options.where = {
           name: {
@@ -172,9 +171,9 @@ class Controller {
           }
         }
       }
-
+      
       const products = await Product.findAll(options)
-
+      
       res.status(200).json(products)
     } catch (error) {
       next(error)
@@ -185,7 +184,7 @@ class Controller {
     const t = await sequelize.transaction()
 
     try {
-      const { name, description, price, mainImg, categoryId, images } = req.body
+      const { name, description, price, mainImg, categoryId, UserMongoDb, images } = req.body
       if(!name) throw { message: "Name is required" }
       if(!description) throw { message: "Description is required" }
       if(!price) throw { message: "Price is required" }
@@ -201,7 +200,7 @@ class Controller {
         price,
         mainImg,
         categoryId,
-        authorId: req.user.id
+        UserMongoDb
       }, {
         transaction: t
       })
@@ -229,8 +228,9 @@ class Controller {
       const { productId } = req.params
 
       const product = await Product.findByPk(productId, {
-        include: [ User, Category, Image ]
+        include: [ Category, Image ]
       })
+      if(!product) throw { message: 'Data is not found' }
       
       res.status(200).json(product)
     } catch (error) {
@@ -306,7 +306,7 @@ class Controller {
       }
 
       t.commit()
-      res.status(200).json({ message: `Product ${product.name} has been updated` })
+      res.status(200).json({ message: `Product has been updated` })
     } catch (error) {
       t.rollback()
       next(error)

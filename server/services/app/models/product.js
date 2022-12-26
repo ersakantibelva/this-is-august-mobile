@@ -17,9 +17,6 @@ module.exports = (sequelize, DataTypes) => {
       Product.belongsTo(models.Category, {
         foreignKey: "categoryId"
       })
-      Product.belongsTo(models.User, {
-        foreignKey: "authorId"
-      })
     }
   }
   Product.init({
@@ -84,7 +81,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     categoryId: DataTypes.INTEGER,
-    authorId: DataTypes.INTEGER
+    UserMongoDb: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Product',

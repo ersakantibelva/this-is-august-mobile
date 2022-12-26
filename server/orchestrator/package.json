@@ -1,5 +1,5 @@
 {
-  "name": "users",
+  "name": "orchestrator",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,11 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
+    "@apollo/server": "^4.3.0",
+    "axios": "^1.2.1",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "mongodb": "4.13",
-    "morgan": "^1.10.0"
+    "graphql": "^16.6.0",
+    "ioredis": "^5.2.4"
   }
 }
