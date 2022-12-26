@@ -1,38 +1,47 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, View, Image, TouchableOpacity } from "react-native";
+import { useQuery } from "@apollo/client";
+import { GET_PRODUCT_DETAIL } from "../queries/product";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import currencyFormat from "../helpers/currencyFormat";
 import Loader from "../components/Loader";
 
 export default function ProductDetailScreen({ route }) {
-  const { slug } = route.params;
-  const [loading, setLoading] = useState(false);
-  const [product, setProduct] = useState({});
+  const { id } = route.params;
+
+  const { loading, error, data } = useQuery(GET_PRODUCT_DETAIL, {
+    variables: {
+      "productId": id
+    }
+  })
+  // console.log(data.product);
+  // const [product, setProduct] = useState({});
   const [bigImage, setBigImage] = useState("");
 
   const showImage = (url) => {
     setBigImage(url);
   };
 
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get("https://h8-p3-c1-belva.foxhub.space/pub/products/" + slug)
-      .then((res) => {
-        setProduct(res.data);
-        setBigImage(res.data.mainImg);
-        currencyFormat(res.data.price);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get("https://h8-p3-c1-belva.foxhub.space/pub/products/" + slug)
+  //     .then((res) => {
+  //       setProduct(res.data);
+  //       setBigImage(res.data.mainImg);
+  //       currencyFormat(res.data.price);
+  //       // setPrice(price)
+  //     });
+  // }, []);
 
-  if (loading) {
-    return <Loader />;
-  } else if (!loading && product.name) {
+  if (loading) return <Loader />
+  if(!loading) {
+    console.log(data);
+    // useEffect(() => {
+    //   setBigImage(data.product.mainImg)
+    // }, [])
+    
     return (
       <ScrollView
         style={{
@@ -60,7 +69,7 @@ export default function ProductDetailScreen({ route }) {
                 marginBottom: 5,
               }}
             >
-              {product.name}
+              {data.product.name}
             </Text>
 
             <Text
@@ -76,10 +85,10 @@ export default function ProductDetailScreen({ route }) {
                 marginLeft: 5,
               }}
             >
-              {product.Category.name}
+              {data.product.Category.name}
             </Text>
           </View>
-          <Text>{product.description}</Text>
+          <Text>{data.product.description}</Text>
         </View>
 
         {bigImage && (
@@ -95,10 +104,10 @@ export default function ProductDetailScreen({ route }) {
         )}
 
         <ScrollView horizontal={true}>
-          <TouchableOpacity onPress={() => showImage(product.mainImg)}>
+          <TouchableOpacity onPress={() => showImage(data.product.mainImg)}>
             <Image
               source={{
-                uri: product.mainImg,
+                uri: data.product.mainImg,
               }}
               style={{
                 width: 100,
@@ -107,8 +116,8 @@ export default function ProductDetailScreen({ route }) {
             />
           </TouchableOpacity>
 
-          {product.Images &&
-            product.Images.map((image) => {
+          {data.product.Images &&
+            data.product.Images.map((image) => {
               return (
                 <TouchableOpacity
                   key={image.id}
@@ -136,7 +145,7 @@ export default function ProductDetailScreen({ route }) {
             paddingHorizontal: 20,
           }}
         >
-          {currencyFormat(product.price)}
+          {currencyFormat(data.product.price)}
         </Text>
 
         <View

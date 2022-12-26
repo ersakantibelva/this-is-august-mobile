@@ -7,7 +7,7 @@ export default function ProductCard({ item }) {
   
   const onPress = () => {
     navigate.navigate('Product Detail', {
-      slug: item.slug,
+      id: item.id,
       name: item.name
     })
   }
