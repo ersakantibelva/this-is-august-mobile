@@ -11,7 +11,7 @@ export default function ProductDetailScreen({ route }) {
   const { id } = route.params;
   const { loading, error, data } = useQuery(GET_PRODUCT_DETAIL, {
     variables: {
-      "productId": id
+      "productId": 12345
     }
   })
   const [bigImage, setBigImage] = useState("");
@@ -25,7 +25,18 @@ export default function ProductDetailScreen({ route }) {
   }, [data])
 
   if (loading) return <Loader />
-
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.textError}>
+          There is something wrong happened.
+        </Text>
+        <Text style={styles.textGoBack}>
+          Go back to see another products
+        </Text>
+      </View>
+    )
+  }
   if(!loading) {
     return (
       <ScrollView

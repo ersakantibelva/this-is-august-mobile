@@ -1,6 +1,20 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
+  errorContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  textError: {
+    color: "gray",
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  textGoBack: {
+    color: "gray",
+    fontSize: 14,
+  },
   container: {
     backgroundColor: "white",
   },
@@ -30,9 +44,9 @@ export const styles = StyleSheet.create({
     marginLeft: 5,
   },
   authorProduct: {
-    color: 'black',
+    color: "black",
     fontSize: 10,
-    marginBottom: 8
+    marginBottom: 8,
   },
   previewImage: {
     width: "100%",
@@ -73,5 +87,5 @@ export const styles = StyleSheet.create({
     marginLeft: 5,
     justifyContent: "center",
     alignItems: "center",
-  }
-})
+  },
+});

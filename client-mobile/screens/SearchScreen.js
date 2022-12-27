@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TextInput,
-} from "react-native";
+import { View, Text, FlatList, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "../styles/Search";
 import ProductCard from "../components/ProductCard";
@@ -32,14 +27,12 @@ export default function DetailScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View
-        style={styles.inputContainer}
-      >
+      <View style={styles.inputContainer}>
         <TextInput
           placeholder="Search here"
           value={search}
           onChangeText={setSearch}
-          cursorColor={'gray'}
+          cursorColor={"gray"}
           onKeyPress={handleSearchProduct}
           style={styles.searchInput}
         />
@@ -47,21 +40,21 @@ export default function DetailScreen() {
 
       {loading && <Loader />}
 
-      <View
-        style={styles.foundedContainer}
-      >
-        {
-          !search &&
-          <Text style={styles.notFoundText}>
-            No product found
+      {error && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.textError}>
+            There is something wrong happened.
           </Text>
-        }
+          <Text style={styles.textGoBack}>Try to search another product or go back to home</Text>
+        </View>
+      )}
+
+      <View style={styles.foundedContainer}>
+        {!search && <Text style={styles.notFoundText}>No product found</Text>}
         {data && (
           <FlatList
             ListHeaderComponent={
-              <Text
-                style={styles.foundedText}
-              >
+              <Text style={styles.foundedText}>
                 {data.products.length} products found
               </Text>
             }
