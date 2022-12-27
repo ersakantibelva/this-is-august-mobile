@@ -1,6 +1,7 @@
 const axios = require("axios");
-const userUrl = 'http://localhost:4001/users'
-const redis = require('../config/cache')
+const { GraphQLError } = require("graphql");
+const userUrl = "http://localhost:4001/users";
+const redis = require("../config/cache");
 
 const typeDefs = `#graphql
   type User {
@@ -39,19 +40,24 @@ const resolvers = {
   Query: {
     users: async () => {
       try {
-        const cacheUser = await redis.get('cacheUser')
+        const cacheUser = await redis.get("cacheUser");
 
-        if(cacheUser) {
-          return JSON.parse(cacheUser)
+        if (cacheUser) {
+          return JSON.parse(cacheUser);
         } else {
           const { data: users } = await axios.get(userUrl);
-          
-          await redis.set('cacheUser', JSON.stringify(users))
+
+          await redis.set("cacheUser", JSON.stringify(users));
 
           return users;
         }
       } catch (error) {
-        console.log(error);
+        throw new GraphQLError(error.response.data.message, {
+          extensions: {
+            code: error.code,
+            http: { status: error.response.status },
+          },
+        });
       }
     },
 
@@ -59,16 +65,18 @@ const resolvers = {
       try {
         const { userId } = args;
 
-        const { data: user } = await axios.get(
-          `${userUrl}/${userId}`
-        );
+        const { data: user } = await axios.get(`${userUrl}/${userId}`);
 
         return user;
       } catch (error) {
-        console.log(error);
+        throw new GraphQLError(error.response.data.message, {
+          extensions: {
+            code: error.code,
+            http: { status: error.response.status },
+          },
+        });
       }
     },
-
   },
 
   Mutation: {
@@ -86,12 +94,17 @@ const resolvers = {
           address,
         });
 
-        await redis.del('cacheUser')
+        await redis.del("cacheUser");
         const output = { message: data };
 
         return output;
       } catch (error) {
-        console.log(error);
+        throw new GraphQLError(error.response.data.message, {
+          extensions: {
+            code: error.code,
+            http: { status: error.response.status },
+          },
+        });
       }
     },
 
@@ -99,19 +112,22 @@ const resolvers = {
       try {
         const { userId } = args;
 
-        const { data } = await axios.delete(
-          `${userUrl}/${userId}`
-        );
+        const { data } = await axios.delete(`${userUrl}/${userId}`);
 
-        await redis.del('cacheUser')
+        await redis.del("cacheUser");
         const output = { message: data };
 
         return output;
       } catch (error) {
-        console.log(error);
+        throw new GraphQLError(error.response.data.message, {
+          extensions: {
+            code: error.code,
+            http: { status: error.response.status },
+          },
+        });
       }
     },
   },
 };
 
-module.exports = { typeDefs, resolvers }
+module.exports = { typeDefs, resolvers };

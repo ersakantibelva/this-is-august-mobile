@@ -1,7 +1,8 @@
+const { GraphQLError } = require("graphql");
 const axios = require("axios");
-const redis = require('../config/cache')
-const productUrl = 'http:localhost:4002/products'
-const userUrl = 'http://localhost:4001/users'
+const redis = require("../config/cache");
+const productUrl = "http:localhost:4002/products";
+const userUrl = "http://localhost:4001/users";
 
 const typeDefs = `#graphql
   type User {
@@ -93,43 +94,45 @@ const resolvers = {
   Query: {
     products: async (_, args) => {
       try {
-        const { search } = args
-        const productCache = await redis.get('productCache')
-        if(productCache && !search) {
-          return JSON.parse(productCache)
+        const { search } = args;
+        const productCache = await redis.get("productCache");
+        if (productCache && !search) {
+          return JSON.parse(productCache);
         } else if (!productCache || search) {
-          let url = productUrl
-          
-          if(search) url += `?search=${search}`
+          let url = productUrl;
+
+          if (search) url += `?search=${search}`;
 
           const { data: products } = await axios.get(url);
-  
-          const { data: users } = await axios.get(
-            `${userUrl}`
-          );
-          
-          products.map(el => {
-            users.forEach(ele => {
-              if(ele["_id"] == el.UserMongoDb) el.User = ele
-            })
-            return el
-          })
 
-          if(!search) await redis.set('productCache', JSON.stringify(products))
-          
+          const { data: users } = await axios.get(`${userUrl}`);
+
+          products.map((el) => {
+            users.forEach((ele) => {
+              if (ele["_id"] == el.UserMongoDb) el.User = ele;
+            });
+            return el;
+          });
+
+          if (!search)
+            await redis.set("productCache", JSON.stringify(products));
+
           return products;
         }
       } catch (error) {
-        console.log(error);
+        throw new GraphQLError(error.response.data.message, {
+          extensions: {
+            code: error.code,
+            http: { status: error.response.status },
+          },
+        });
       }
     },
 
     product: async (_, args) => {
       try {
         const { productId } = args;
-        const { data: product } = await axios.get(
-          `${productUrl}/${productId}`
-        );
+        const { data: product } = await axios.get(`${productUrl}/${productId}`);
 
         const { data: User } = await axios.get(
           `${userUrl}/${product.UserMongoDb}`
@@ -139,7 +142,12 @@ const resolvers = {
 
         return product;
       } catch (error) {
-        console.log(error);
+        throw new GraphQLError(error.response.data.message, {
+          extensions: {
+            code: error.code,
+            http: { status: error.response.status },
+          },
+        });
       }
     },
   },
@@ -167,11 +175,16 @@ const resolvers = {
           images,
         });
 
-        await redis.del('productCache')
+        await redis.del("productCache");
 
         return data;
       } catch (error) {
-        console.log(error);
+        throw new GraphQLError(error.response.data.message, {
+          extensions: {
+            code: error.code,
+            http: { status: error.response.status },
+          },
+        });
       }
     },
 
@@ -187,14 +200,19 @@ const resolvers = {
           price,
           mainImg,
           categoryId,
-          Images
+          Images,
         });
 
-        await redis.del('productCache')
+        await redis.del("productCache");
 
-        return data
+        return data;
       } catch (error) {
-        console.log(error);
+        throw new GraphQLError(error.response.data.message, {
+          extensions: {
+            code: error.code,
+            http: { status: error.response.status },
+          },
+        });
       }
     },
 
@@ -202,18 +220,21 @@ const resolvers = {
       try {
         const { productId } = args;
 
-        const { data } = await axios.delete(
-          `${productUrl}/${productId}`
-        );
+        const { data } = await axios.delete(`${productUrl}/${productId}`);
 
-        await redis.del('productCache')
+        await redis.del("productCache");
 
         return data;
       } catch (error) {
-        console.log(error);
+        throw new GraphQLError(error.response.data.message, {
+          extensions: {
+            code: error.code,
+            http: { status: error.response.status },
+          },
+        });
       }
     },
   },
 };
 
-module.exports = { typeDefs, resolvers }
+module.exports = { typeDefs, resolvers };
