@@ -1,5 +1,3 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "@apollo/client";
@@ -11,31 +9,6 @@ import Loader from "../components/Loader";
 export default function HomeScreen() {
   const { loading, error, data } = useQuery(GET_PRODUCTS);
 
-  // const [loading, setLoading] = useState(false)
-  // const [products, setProducts] = useState({
-  //   currentPage: 1,
-  //   totalPages: 1,
-  //   totalProduct: 0,
-  //   products: [],
-  // });
-
-  // useEffect(() => {
-  // setLoading(true)
-  //   axios
-  //     .get("https://h8-p3-c1-belva.foxhub.space/pub/products")
-  //     .then((res) => {
-  //       setProducts({
-  //         currentPage: res.data.currentPage,
-  //         totalPages: res.data.totalPages,
-  //         totalProduct: res.data.totalProduct,
-  //         products: res.data.products,
-  //       });
-  //       setLoading(false);
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  // }, []);
   if (loading) return <Loader />
   else {
     return (

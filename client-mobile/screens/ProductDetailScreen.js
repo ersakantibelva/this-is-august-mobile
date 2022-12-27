@@ -1,93 +1,59 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, View, Image, TouchableOpacity } from "react-native";
+import { styles } from "../styles/ProductDetail";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCT_DETAIL } from "../queries/product";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import currencyFormat from "../helpers/currencyFormat";
 import Loader from "../components/Loader";
 
 export default function ProductDetailScreen({ route }) {
   const { id } = route.params;
-
   const { loading, error, data } = useQuery(GET_PRODUCT_DETAIL, {
     variables: {
       "productId": id
     }
   })
-  // console.log(data.product);
-  // const [product, setProduct] = useState({});
   const [bigImage, setBigImage] = useState("");
 
   const showImage = (url) => {
     setBigImage(url);
   };
-
-  // useEffect(() => {
-  //   axios
-  //     .get("https://h8-p3-c1-belva.foxhub.space/pub/products/" + slug)
-  //     .then((res) => {
-  //       setProduct(res.data);
-  //       setBigImage(res.data.mainImg);
-  //       currencyFormat(res.data.price);
-  //       // setPrice(price)
-  //     });
-  // }, []);
+  
+  useEffect(() => {
+    if(data && data.product) setBigImage(data.product.mainImg)
+  }, [data])
 
   if (loading) return <Loader />
+
   if(!loading) {
-    console.log(data);
-    // useEffect(() => {
-    //   setBigImage(data.product.mainImg)
-    // }, [])
-    
     return (
       <ScrollView
-        style={{
-          backgroundColor: "white",
-        }}
+        style={styles.container}
       >
         <View
-          style={{
-            marginVertical: 10,
-            paddingHorizontal: 20,
-          }}
+          style={styles.headerContainer}
         >
           <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+            style={styles.nameContainer}
           >
             <Text
-              style={{
-                flex: 9,
-                fontSize: 18,
-                fontWeight: "bold",
-                marginBottom: 5,
-              }}
+              style={styles.nameProduct}
             >
               {data.product.name}
             </Text>
 
             <Text
-              style={{
-                // flexGrow: 1,
-                backgroundColor: "brown",
-                color: "white",
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                borderRadius: 20,
-                alignItems: "center",
-                textAlign: "center",
-                marginLeft: 5,
-              }}
+              style={styles.categoryTag}
             >
               {data.product.Category.name}
             </Text>
           </View>
+          <Text
+            style={styles.authorProduct}
+          >
+            By: {data.product.User.email}
+          </Text>
           <Text>{data.product.description}</Text>
         </View>
 
@@ -96,10 +62,7 @@ export default function ProductDetailScreen({ route }) {
             source={{
               uri: bigImage,
             }}
-            style={{
-              width: "100%",
-              height: 500,
-            }}
+            style={styles.previewImage}
           />
         )}
 
@@ -109,10 +72,7 @@ export default function ProductDetailScreen({ route }) {
               source={{
                 uri: data.product.mainImg,
               }}
-              style={{
-                width: 100,
-                height: 100,
-              }}
+              style={styles.smallImage}
             />
           </TouchableOpacity>
 
@@ -127,10 +87,7 @@ export default function ProductDetailScreen({ route }) {
                     source={{
                       uri: image.imgUrl,
                     }}
-                    style={{
-                      width: 100,
-                      height: 100,
-                    }}
+                    style={styles.smallImage}
                   />
                 </TouchableOpacity>
               );
@@ -138,53 +95,26 @@ export default function ProductDetailScreen({ route }) {
         </ScrollView>
 
         <Text
-          style={{
-            fontSize: 30,
-            fontWeight: "500",
-            marginVertical: 10,
-            paddingHorizontal: 20,
-          }}
+          style={styles.price}
         >
           {currencyFormat(data.product.price)}
         </Text>
 
         <View
-          style={{
-            flexDirection: "row",
-            marginHorizontal: 10,
-            padding: 10,
-            height: 80,
-          }}
+          style={styles.footer}
         >
           <TouchableOpacity
-            style={{
-              flex: 5,
-              backgroundColor: "brown",
-              width: "100%",
-              marginRight: 5,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            style={styles.cartContainer}
           >
             <Text
-              style={{
-                color: "white",
-                fontSize: 18,
-                fontWeight: "bold",
-              }}
+              style={styles.addToCartText}
             >
               ADD TO CART
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={{
-              flex: 1,
-              width: "100%",
-              marginLeft: 5,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            style={styles.favoriteContainer}
           >
             <MaterialIcons name="favorite-outline" size={50} color="crimson" />
           </TouchableOpacity>
@@ -193,3 +123,4 @@ export default function ProductDetailScreen({ route }) {
     );
   }
 }
+

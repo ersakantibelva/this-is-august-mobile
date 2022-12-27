@@ -1,59 +1,29 @@
 import { Image, Text, View } from "react-native";
+import { styles } from "../styles/HeaderHome";
 
 export default function HeaderHome() {
   return (
-    <View style={{
-      height: 250
-    }}>
+    <View style={styles.container}>
       <View
-        style={{
-          flex: 4
-        }}
+        style={styles.bannerContainer}
       >
         <View
-          style={{
-            position: "absolute",
-            zIndex: 20,
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          style={styles.textContainer}
         >
           <Text
-            style={{
-              color: "white",
-              fontWeight: "300",
-              fontSize: 30,
-            }}
+            style={styles.textBrand}
           >
             THIS IS AUGUST
           </Text>
           <Text
-            style={{
-              color: "white",
-              fontWeight: "600",
-            }}
+            style={styles.textSlogan}
           >
             shop your outfit now.
           </Text>
         </View>
 
         <View
-          style={{
-            position: "absolute",
-            zIndex: 10,
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "black",
-            opacity: 0.3,
-          }}
+          style={styles.overlay}
         ></View>
 
         <View
@@ -82,16 +52,8 @@ export default function HeaderHome() {
         </View>
       </View>
 
-      <View style={{
-        backgroundColor: 'white',
-        flex: 1,
-        justifyContent: 'center',
-      }}>
-        <Text style={{
-          textAlign: "center",
-          fontSize: 20,
-          fontWeight: '500'
-        }}>
+      <View style={styles.allProdContainer}>
+        <Text style={styles.allProdText}>
           All Products
         </Text>
       </View>

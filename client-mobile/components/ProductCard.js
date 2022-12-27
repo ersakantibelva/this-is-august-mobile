@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import currencyFormat from "../helpers/currencyFormat";
+import { styles } from "../styles/ProductCard";
 
 export default function ProductCard({ item }) {
   const navigate = useNavigation()
@@ -13,23 +14,13 @@ export default function ProductCard({ item }) {
   }
 
   return (
-    <View style={{
-      backgroundColor: 'white',
-      width: "50%",
-      padding: 10
-    }}>
+    <View style={styles.container}>
       <TouchableOpacity onPress={onPress}>
-      <Image style={{
-        width: "100%",
-        height: 200
-      }} source={{
+      <Image style={styles.image} source={{
           uri: `${item.mainImg}`,
         }} />
         <Text>{item.name}</Text>
-        <Text style={{
-          fontWeight: 'bold',
-          fontSize: 20
-        }}>{currencyFormat(item.price)}</Text>
+        <Text style={styles.price}>{currencyFormat(item.price)}</Text>
       </TouchableOpacity>
     </View>
   )
