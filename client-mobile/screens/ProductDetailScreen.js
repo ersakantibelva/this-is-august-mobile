@@ -1,93 +1,56 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, View, Image, TouchableOpacity } from "react-native";
+import { styles } from "../styles/ProductDetail";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCT_DETAIL } from "../queries/product";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import currencyFormat from "../helpers/currencyFormat";
 import Loader from "../components/Loader";
 
 export default function ProductDetailScreen({ route }) {
   const { id } = route.params;
-
   const { loading, error, data } = useQuery(GET_PRODUCT_DETAIL, {
     variables: {
-      "productId": id
-    }
-  })
-  // console.log(data.product);
-  // const [product, setProduct] = useState({});
+      productId: id,
+    },
+  });
   const [bigImage, setBigImage] = useState("");
+  const [like, setLike] = useState("favorite-outline");
 
   const showImage = (url) => {
     setBigImage(url);
   };
 
-  // useEffect(() => {
-  //   axios
-  //     .get("https://h8-p3-c1-belva.foxhub.space/pub/products/" + slug)
-  //     .then((res) => {
-  //       setProduct(res.data);
-  //       setBigImage(res.data.mainImg);
-  //       currencyFormat(res.data.price);
-  //       // setPrice(price)
-  //     });
-  // }, []);
+  const likeButton = () => {
+    if (like == "favorite-outline") setLike("favorite");
+    else setLike("favorite-outline");
+  };
 
-  if (loading) return <Loader />
-  if(!loading) {
-    console.log(data);
-    // useEffect(() => {
-    //   setBigImage(data.product.mainImg)
-    // }, [])
-    
+  useEffect(() => {
+    if (data && data.product) setBigImage(data.product.mainImg);
+  }, [data]);
+
+  if (loading) return <Loader />;
+  if (error) {
     return (
-      <ScrollView
-        style={{
-          backgroundColor: "white",
-        }}
-      >
-        <View
-          style={{
-            marginVertical: 10,
-            paddingHorizontal: 20,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text
-              style={{
-                flex: 9,
-                fontSize: 18,
-                fontWeight: "bold",
-                marginBottom: 5,
-              }}
-            >
-              {data.product.name}
-            </Text>
+      <View style={styles.errorContainer}>
+        <Text style={styles.textError}>There is something wrong happened.</Text>
+        <Text style={styles.textGoBack}>Go back to see another products</Text>
+      </View>
+    );
+  }
+  if (!loading) {
+    return (
+      <ScrollView style={styles.container}>
+        <View style={styles.headerContainer}>
+          <View style={styles.nameContainer}>
+            <Text style={styles.nameProduct}>{data.product.name}</Text>
 
-            <Text
-              style={{
-                // flexGrow: 1,
-                backgroundColor: "brown",
-                color: "white",
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                borderRadius: 20,
-                alignItems: "center",
-                textAlign: "center",
-                marginLeft: 5,
-              }}
-            >
-              {data.product.Category.name}
-            </Text>
+            <Text style={styles.categoryTag}>{data.product.Category.name}</Text>
           </View>
+          <Text style={styles.authorProduct}>
+            By: {data.product.User.email}
+          </Text>
           <Text>{data.product.description}</Text>
         </View>
 
@@ -96,10 +59,7 @@ export default function ProductDetailScreen({ route }) {
             source={{
               uri: bigImage,
             }}
-            style={{
-              width: "100%",
-              height: 500,
-            }}
+            style={styles.previewImage}
           />
         )}
 
@@ -109,10 +69,7 @@ export default function ProductDetailScreen({ route }) {
               source={{
                 uri: data.product.mainImg,
               }}
-              style={{
-                width: 100,
-                height: 100,
-              }}
+              style={styles.smallImage}
             />
           </TouchableOpacity>
 
@@ -127,66 +84,26 @@ export default function ProductDetailScreen({ route }) {
                     source={{
                       uri: image.imgUrl,
                     }}
-                    style={{
-                      width: 100,
-                      height: 100,
-                    }}
+                    style={styles.smallImage}
                   />
                 </TouchableOpacity>
               );
             })}
         </ScrollView>
 
-        <Text
-          style={{
-            fontSize: 30,
-            fontWeight: "500",
-            marginVertical: 10,
-            paddingHorizontal: 20,
-          }}
-        >
-          {currencyFormat(data.product.price)}
-        </Text>
+        <Text style={styles.size}>Available Size: S, M, L, XL</Text>
+        <Text style={styles.price}>{currencyFormat(data.product.price)}</Text>
 
-        <View
-          style={{
-            flexDirection: "row",
-            marginHorizontal: 10,
-            padding: 10,
-            height: 80,
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              flex: 5,
-              backgroundColor: "brown",
-              width: "100%",
-              marginRight: 5,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                color: "white",
-                fontSize: 18,
-                fontWeight: "bold",
-              }}
-            >
-              ADD TO CART
-            </Text>
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.cartContainer}>
+            <Text style={styles.addToCartText}>ADD TO CART</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={{
-              flex: 1,
-              width: "100%",
-              marginLeft: 5,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            style={styles.favoriteContainer}
+            onPress={likeButton}
           >
-            <MaterialIcons name="favorite-outline" size={50} color="crimson" />
+            <MaterialIcons name={like} size={50} color="crimson" />
           </TouchableOpacity>
         </View>
       </ScrollView>

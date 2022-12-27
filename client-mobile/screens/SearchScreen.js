@@ -1,107 +1,73 @@
-import axios from "axios";
 import { useState } from "react";
-import { View, Text, FlatList, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { styles } from "../styles/Search";
 import ProductCard from "../components/ProductCard";
-import Loader from "../components/Loader"
+import Loader from "../components/Loader";
+import { useLazyQuery } from "@apollo/client";
+import { GET_PRODUCTS } from "../queries/product";
 
 export default function DetailScreen() {
-  const [loading, setLoading] = useState(false)
-  const [search, setSearch] = useState("")
-  const [product, setProduct] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    totalProduct: 0,
-    products: []
-  })
+  const [search, setSearch] = useState("");
+  const [getFiltered, { loading, error, data }] = useLazyQuery(GET_PRODUCTS, {
+    variables: {
+      search: search,
+    },
+  });
 
   async function handleSearchProduct() {
     try {
-      setLoading(true)
-      const { data } = await axios.get('https://h8-p3-c1-belva.foxhub.space/pub/products?search=' + search)
-      setProduct({
-        currentPage: data.currentPage,
-        totalPages: data.totalPages,
-        totalProduct: data.totalProduct,
-        products: data.products
-      })
+      getFiltered({
+        variables: { search },
+      });
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false)
     }
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          justifyContent: "center",
-          marginHorizontal: 2,
-          marginTop: 5,
-          zIndex: 20
-        }}
-      >
+    <SafeAreaView style={styles.container}>
+      <View style={styles.inputContainer}>
         <TextInput
           placeholder="Search here"
           value={search}
           onChangeText={setSearch}
-          style={{
-            alignSelf: "center",
-            width: "80%",
-            height: 40,
-            marginRight: 10,
-            borderColor: "gray",
-            borderRadius: 5,
-            borderWidth: 1,
-            padding: 10,
-          }}
+          cursorColor={"gray"}
+          onKeyPress={handleSearchProduct}
+          style={styles.searchInput}
         />
-        <TouchableOpacity
-        onPress={handleSearchProduct}
-          style={{
-            width: "20%",
-            backgroundColor: "#DDDDDD",
-            height: "100%",
-            justifyContent: "center",
-            alignSelf: "center",
-            borderRadius: 5,
-          }}
-        >
-          <Text
-            style={{
-              textAlign: "center",
-            }}
-          >
-            SEARCH
-          </Text>
-        </TouchableOpacity>
       </View>
 
-      {
-        loading &&
-        <Loader />
-      }
+      {loading && <Loader />}
 
-      <View style={{
-        flex: 14
-      }}>
-      {product && (
-        <FlatList
-          data={product.products}
-          renderItem={({ item }) => <ProductCard item={item} />}
-          keyExtractor={(item) => item.id}
-          numColumns={2}
-          contentContainerStyle={{
-            justifyContent: "space-around",
-          }}
-          style={{
-            width: "100%",
-          }}
-        />
+      {error && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.textError}>
+            There is something wrong happened.
+          </Text>
+          <Text style={styles.textGoBack}>Try to search another product or go back to home</Text>
+        </View>
       )}
+
+      <View style={styles.foundedContainer}>
+        {!search && <Text style={styles.notFoundText}>No product found</Text>}
+        {data && (
+          <FlatList
+            ListHeaderComponent={
+              <Text style={styles.foundedText}>
+                {data.products.length} products found
+              </Text>
+            }
+            data={data.products}
+            renderItem={({ item }) => <ProductCard item={item} />}
+            keyExtractor={(item) => item.id}
+            numColumns={2}
+            contentContainerStyle={{
+              justifyContent: "space-around",
+            }}
+            style={styles.card}
+          />
+        )}
       </View>
     </SafeAreaView>
   );

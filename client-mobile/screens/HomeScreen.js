@@ -1,5 +1,3 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "@apollo/client";
@@ -7,36 +5,13 @@ import { GET_PRODUCTS } from "../queries/product";
 import ProductCard from "../components/ProductCard";
 import HeaderHome from "../components/HeaderHome";
 import Loader from "../components/Loader";
+import { styles } from "../styles/Home";
 
 export default function HomeScreen() {
   const { loading, error, data } = useQuery(GET_PRODUCTS);
 
-  // const [loading, setLoading] = useState(false)
-  // const [products, setProducts] = useState({
-  //   currentPage: 1,
-  //   totalPages: 1,
-  //   totalProduct: 0,
-  //   products: [],
-  // });
-
-  // useEffect(() => {
-  // setLoading(true)
-  //   axios
-  //     .get("https://h8-p3-c1-belva.foxhub.space/pub/products")
-  //     .then((res) => {
-  //       setProducts({
-  //         currentPage: res.data.currentPage,
-  //         totalPages: res.data.totalPages,
-  //         totalProduct: res.data.totalProduct,
-  //         products: res.data.products,
-  //       });
-  //       setLoading(false);
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  // }, []);
   if (loading) return <Loader />
+  else if (error) console.log(error);
   else {
     return (
       <SafeAreaView
@@ -45,6 +20,15 @@ export default function HomeScreen() {
         }}
       >
         {loading && <Loader />}
+
+        {error && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.textError}>
+            There is something wrong happened.
+          </Text>
+          <Text style={styles.textGoBack}>Try to search another product or go back to home</Text>
+        </View>
+      )}
 
         <FlatList
           ListHeaderComponent={<HeaderHome />}
