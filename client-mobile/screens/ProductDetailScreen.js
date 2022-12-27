@@ -11,58 +11,44 @@ export default function ProductDetailScreen({ route }) {
   const { id } = route.params;
   const { loading, error, data } = useQuery(GET_PRODUCT_DETAIL, {
     variables: {
-      "productId": 12345
-    }
-  })
+      productId: id,
+    },
+  });
   const [bigImage, setBigImage] = useState("");
+  const [like, setLike] = useState("favorite-outline");
 
   const showImage = (url) => {
     setBigImage(url);
   };
-  
-  useEffect(() => {
-    if(data && data.product) setBigImage(data.product.mainImg)
-  }, [data])
 
-  if (loading) return <Loader />
+  const likeButton = () => {
+    if (like == "favorite-outline") setLike("favorite");
+    else setLike("favorite-outline");
+  };
+
+  useEffect(() => {
+    if (data && data.product) setBigImage(data.product.mainImg);
+  }, [data]);
+
+  if (loading) return <Loader />;
   if (error) {
     return (
       <View style={styles.errorContainer}>
-        <Text style={styles.textError}>
-          There is something wrong happened.
-        </Text>
-        <Text style={styles.textGoBack}>
-          Go back to see another products
-        </Text>
+        <Text style={styles.textError}>There is something wrong happened.</Text>
+        <Text style={styles.textGoBack}>Go back to see another products</Text>
       </View>
-    )
+    );
   }
-  if(!loading) {
+  if (!loading) {
     return (
-      <ScrollView
-        style={styles.container}
-      >
-        <View
-          style={styles.headerContainer}
-        >
-          <View
-            style={styles.nameContainer}
-          >
-            <Text
-              style={styles.nameProduct}
-            >
-              {data.product.name}
-            </Text>
+      <ScrollView style={styles.container}>
+        <View style={styles.headerContainer}>
+          <View style={styles.nameContainer}>
+            <Text style={styles.nameProduct}>{data.product.name}</Text>
 
-            <Text
-              style={styles.categoryTag}
-            >
-              {data.product.Category.name}
-            </Text>
+            <Text style={styles.categoryTag}>{data.product.Category.name}</Text>
           </View>
-          <Text
-            style={styles.authorProduct}
-          >
+          <Text style={styles.authorProduct}>
             By: {data.product.User.email}
           </Text>
           <Text>{data.product.description}</Text>
@@ -105,33 +91,22 @@ export default function ProductDetailScreen({ route }) {
             })}
         </ScrollView>
 
-        <Text
-          style={styles.price}
-        >
-          {currencyFormat(data.product.price)}
-        </Text>
+        <Text style={styles.size}>Available Size: S, M, L, XL</Text>
+        <Text style={styles.price}>{currencyFormat(data.product.price)}</Text>
 
-        <View
-          style={styles.footer}
-        >
-          <TouchableOpacity
-            style={styles.cartContainer}
-          >
-            <Text
-              style={styles.addToCartText}
-            >
-              ADD TO CART
-            </Text>
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.cartContainer}>
+            <Text style={styles.addToCartText}>ADD TO CART</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.favoriteContainer}
+            onPress={likeButton}
           >
-            <MaterialIcons name="favorite-outline" size={50} color="crimson" />
+            <MaterialIcons name={like} size={50} color="crimson" />
           </TouchableOpacity>
         </View>
       </ScrollView>
     );
   }
 }
-

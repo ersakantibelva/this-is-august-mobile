@@ -56,6 +56,12 @@ export const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
+  size: {
+    marginTop: 10,
+    paddingHorizontal: 20,
+    fontWeight: 'bold',
+    fontSize: 16
+  },
   price: {
     fontSize: 30,
     fontWeight: "500",
