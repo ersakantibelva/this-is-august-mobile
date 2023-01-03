@@ -9,7 +9,7 @@ const { mongoConnect } = require('./config/mongoConnect');
 const router = require('./router');
 const errorHandler = require('./middlewares/errorHandler');
 const app = express()
-const port = 4001
+const port = process.env.PORT || 4001
 
 app.use(cors())
 app.use(express.urlencoded({ extended: true }))

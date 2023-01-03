@@ -1,0 +1,30 @@
+services:
+  orchestrator:
+    build: ./orchestrator
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./orchestrator:/usr/local/p3-challenge-2/server/orchestrator
+    environment:
+      PORT: ${PORT_ORCHESTRATOR}
+      REDIS_PASS: ${REDIS_PASS}
+  service-users:
+    build: ./services/users
+    ports:
+      - "4001:4001"
+    volumes:
+      - ./services/users:/usr/local/p3-challenge-2/server/services/users
+    environment:
+      PORT: ${PORT_USERS}
+      MONGODB_PASS: ${MONGODB_PASS}
+  service-app:
+    build: ./services/app
+    ports:
+      - "4002:4002"
+    volumes:
+      - ./services/app:/usr/local/p3-challenge-2/server/services/app
+    environment:
+      PORT: ${PORT_APP}
+      JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: ${DATABASE_URL}
+      NODE_ENV: ${NODE_ENV}

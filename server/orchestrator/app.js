@@ -8,11 +8,11 @@ const productSchema = require('./schemas/productSchema')
 
 const server = new ApolloServer({
   typeDefs: [userSchema.typeDefs, productSchema.typeDefs],
-  resolvers: [userSchema.resolvers, productSchema.resolvers]
+  resolvers: [userSchema.resolvers, productSchema.resolvers], introspection: true
 });
 
 startStandaloneServer(server, {
-  listen: { port: 4000 },
+  listen: { port: process.env.PORT || 4000 },
 }).then(({ url }) => {
   console.log(`🚀  Server ready at: ${url}`);
 });
