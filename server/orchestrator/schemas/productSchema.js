@@ -1,7 +1,7 @@
 const { GraphQLError } = require("graphql");
 const axios = require("axios");
 const redis = require("../config/cache");
-const productUrl = "http:localhost:4002/products";
+const productUrl = "http://localhost:4002/products";
 const userUrl = "http://localhost:4001/users";
 
 const typeDefs = `#graphql
@@ -142,6 +142,7 @@ const resolvers = {
 
         return product;
       } catch (error) {
+        console.log(error);
         throw new GraphQLError(error.response.data.message, {
           extensions: {
             code: error.code,
